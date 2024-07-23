@@ -1,30 +1,24 @@
-
 #!/usr/bin/python3
-"""LIFO Cache Replacement Implementation Class
-"""
+"""LIFO Cache Replacement Implementation Class"""
 from threading import RLock
 
 BaseCaching = __import__('base_caching').BaseCaching
 
 
 class LIFOCache(BaseCaching):
-    """
-    An implementation of LIFO(Last In Fisrt Out) Cache
-
+    """implementation of LIFO Cache
     Attributes:
         __keys (list): Stores cache keys in order of entry using `.append`
         __rlock (RLock): Lock accessed resources to prevent race condition
     """
     def __init__(self):
-        """ Instantiation method, sets instance attributes
-        """
+        """ Instantiation method"""
         super().__init__()
         self.__keys = []
         self.__rlock = RLock()
 
     def put(self, key, item):
-        """ Add an item in the cache
-        """
+        """ Add item in cache"""
         if key is not None and item is not None:
             keyOut = self._balance(key)
             with self.__rlock:
@@ -33,14 +27,12 @@ class LIFOCache(BaseCaching):
                 print('DISCARD: {}'.format(keyOut))
 
     def get(self, key):
-        """ Get an item by key
-        """
+        """ Get item by key"""
         with self.__rlock:
             return self.cache_data.get(key, None)
 
     def _balance(self, keyIn):
-        """ Removes the earliest item from the cache at MAX size
-        """
+        """ Removes earliest item from cache at MAX size"""
         keyOut = None
         with self.__rlock:
             keysLength = len(self.__keys)
@@ -52,4 +44,3 @@ class LIFOCache(BaseCaching):
                 self.__keys.remove(keyIn)
             self.__keys.insert(keysLength, keyIn)
         return keyOut
-
